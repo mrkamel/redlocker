@@ -20,11 +20,12 @@ class Redlocker
   class TimeoutError < StandardError; end
 
   class Lock
-    def initialize(redis:, name:, timeout:, delay:)
+    def initialize(redis:, name:, timeout:, delay:, namespace: nil)
       @redis = redis
       @name = name
       @timeout = timeout
       @delay = delay
+      @namespace = namespace
       @id = SecureRandom.hex
     end
 
@@ -101,19 +102,22 @@ class Redlocker
     end
 
     def redis_key_name
-      "redlocker:#{@name}"
+      [@namespace, 'redlocker', @name].compact.join(':')
     end
   end
 
   # Create a new `Redlocker` instance.
   #
   # @param redis [Redis] The redis connection
+  # @param namespace [String] An optional namespace to use for redis keys in
+  #   addition to the default `redlocker:` namespace.
   #
   # @example
   #   Redlocker.new(redis: Redis.new)
 
-  def initialize(redis:)
+  def initialize(redis:, namespace: nil)
     @redis = redis
+    @namespace = namespace
   end
 
   # Acquires the specified lock or raises a `Redlocker::TimeoutError` when the
@@ -139,6 +143,6 @@ class Redlocker
   #   end
 
   def lock(name:, timeout:, delay: 0.25, &block)
-    Lock.new(redis: @redis, name: name, timeout: timeout, delay: delay).acquire(&block)
+    Lock.new(redis: @redis, name: name, timeout: timeout, delay: delay, namespace: @namespace).acquire(&block)
   end
 end

@@ -2,7 +2,6 @@
 
 RSpec.describe Redlocker do
   describe '#lock' do
-    let(:redlocker) { Redlocker.new(redis: redis) }
     let(:redis) { Redis.new }
 
     after { redis.flushdb }
@@ -11,7 +10,7 @@ RSpec.describe Redlocker do
       lock_id = nil
       pttl = nil
 
-      redlocker.lock(name: 'some_lock', timeout: 3) do
+      Redlocker.new(redis: redis).lock(name: 'some_lock', timeout: 3) do
         lock_id = redis.get('redlocker:some_lock')
         pttl = redis.pttl('redlocker:some_lock')
       end
@@ -20,8 +19,18 @@ RSpec.describe Redlocker do
       expect(pttl).to be_between(4900, 5000)
     end
 
+    it 'uses the specified namespace' do
+      lock_id = nil
+
+      Redlocker.new(redis: redis, namespace: 'some_namespace').lock(name: 'some_lock', timeout: 3) do
+        lock_id = redis.get('some_namespace:redlocker:some_lock')
+      end
+
+      expect(lock_id).not_to be_nil
+    end
+
     it 'releases the lock when the block has finished' do
-      redlocker.lock(name: 'some_lock', timeout: 3) do
+      Redlocker.new(redis: redis).lock(name: 'some_lock', timeout: 3) do
         # nothing
       end
 
@@ -29,6 +38,8 @@ RSpec.describe Redlocker do
     end
 
     it 'releases the lock when block raises' do
+      redlocker = Redlocker.new(redis: redis)
+
       begin
         redlocker.lock(name: 'some_lock', timeout: 3) do
           raise 'error'
@@ -46,7 +57,7 @@ RSpec.describe Redlocker do
       lock_id = nil
       pttl = nil
 
-      redlocker.lock(name: 'some_lock', timeout: 3) do
+      Redlocker.new(redis: redis).lock(name: 'some_lock', timeout: 3) do
         sleep 2.5
 
         lock_id = redis.get('redlocker:some_lock')
@@ -59,6 +70,8 @@ RSpec.describe Redlocker do
     end
 
     it 'raises a TimeoutError when the lock can not be acquired' do
+      redlocker = Redlocker.new(redis: redis)
+
       thread = Thread.new do
         redlocker.lock(name: 'some_lock', timeout: 3) do
           sleep 3 # Block the lock for 3 seconds
@@ -80,7 +93,7 @@ RSpec.describe Redlocker do
       lock_id = nil
       pttl = nil
 
-      redlocker.lock(name: 'some_lock', timeout: 3) do
+      Redlocker.new(redis: redis).lock(name: 'some_lock', timeout: 3) do
         # Let it fail 3 times
         allow(redis).to receive(:expire).and_raise('error')
         sleep 3.5
@@ -99,6 +112,8 @@ RSpec.describe Redlocker do
     end
 
     it 'uses the specified delay while acquiring the lock' do
+      redlocker = Redlocker.new(redis: redis)
+
       thread = Thread.new do
         redlocker.lock(name: 'some_lock', timeout: 3) do
           sleep 2
