@@ -1,0 +1,30 @@
+on: push
+name: test
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        redis:
+          - redis:5.0
+          - redis:6.0
+        ruby:
+          - 2.6
+          - 2.7
+          - 3.0
+    services:
+      elasticsearch:
+        image: ${{ matrix.redis }}
+        ports:
+          - 6379:6379
+    steps:
+      - uses: actions/checkout@v1
+      - uses: actions/setup-ruby@v1
+        with:
+          ruby-version: ${{ matrix.ruby }}
+      - run: gem install bundler
+      - run: bundle
+      - run: sleep 3
+      - run: bundle exec rspec
+      - run: bundle exec rubocop

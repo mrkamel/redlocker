@@ -1,0 +1,77 @@
+# Redlocker
+
+[![Build](https://github.com/mrkamel/redlocker/workflows/test/badge.svg)](https://github.com/mrkamel/redlocker/actions?query=workflow%3Atest+branch%3Amaster)
+[![Gem Version](https://badge.fury.io/rb/redlocker.svg)](http://badge.fury.io/rb/redlocker)
+
+**Acquire and keep distributed locks using redis**
+
+Redlocker allows to easily acquire and keep distributed locks using redis.
+An acquired lock gets automatically renewed every second, i.e. its 5 second
+expiry value gets renewed in redis every second, and it gets released when
+the given block finishes.
+
+## Installation
+
+Add this line to your application's Gemfile:
+
+```ruby
+gem 'redlocker'
+```
+
+And then execute:
+
+    $ bundle install
+
+Or install it yourself as:
+
+    $ gem install redlocker
+
+## Usage
+
+Using Redlocker could not be easier:
+
+```ruby
+redlocker = Redlocker.new(redis: Redis.new)
+
+redlocker.lock(name: 'some_lock', timeout: 5) do
+  # lock acquired
+end
+```
+
+If the lock can not be acquired within the specified `timeout`, a
+`Redlocker::TimeoutError` is raised.
+
+When the block finishes or raises, the acquired lock gets freed.
+ 
+You can optionally pass a `delay` when acquiring a lock, which specifies the
+time to wait between subsequent calls which check in redis whether or not the
+lock is free. Default is 0.25 seconds:
+
+```ruby
+redlocker.lock(name: "some lock", timeout: 5, delay: 1) do
+  # lock acquired
+end
+```
+
+That's it.
+
+## Reference docs
+
+Please find the reference docs at
+[http://www.rubydoc.info/github/mrkamel/redlocker](http://www.rubydoc.info/github/mrkamel/redlocker)
+
+## Development
+
+After checking out the repo, run `bin/setup` to install dependencies. Then, run
+`bundle exec rspec` to run the tests. You can also run `bin/console` for an
+interactive prompt that will allow you to experiment.
+
+## Contributing
+
+Bug reports and pull requests are welcome on GitHub at
+https://github.com/mrkamel/redlocker.
+
+## License
+
+The gem is available as open source under the terms of the [MIT
+License](https://opensource.org/licenses/MIT).
