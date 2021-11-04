@@ -71,7 +71,7 @@ module Redlocker
             sleep 1
 
             redis.expire(redis_key_name, 5)
-          rescue
+          rescue StandardError
             # nothing
           end
         end
