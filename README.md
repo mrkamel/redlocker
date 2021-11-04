@@ -53,7 +53,7 @@ redlocker.lock(name: "some lock", timeout: 5, delay: 1) do
 end
 ```
 
-If you are using a shared redis, you can pass a namespace, which will used for
+If you are using a shared redis, you can pass a namespace, which will be used for
 prefixing redis keys in addition to the default `redlocker:` namespace.
 
 ```ruby
