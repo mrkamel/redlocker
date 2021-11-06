@@ -31,9 +31,9 @@ Or install it yourself as:
 Using Redlocker could not be easier:
 
 ```ruby
-redlocker = Redlocker.new(redis: Redis.new)
+RedlockerClient = Redlocker::Client.new(redis: Redis.new)
 
-redlocker.lock(name: 'some_lock', timeout: 5) do
+RedlockerClient.lock(name: 'some_lock', timeout: 5) do
   # lock acquired
 end
 ```
@@ -48,7 +48,7 @@ time to wait between subsequent calls which check in redis whether or not the
 lock is free. Default is 0.25 seconds:
 
 ```ruby
-redlocker.lock(name: "some lock", timeout: 5, delay: 1) do
+RedlockerClient.lock(name: "some lock", timeout: 5, delay: 1) do
   # lock acquired
 end
 ```
@@ -57,7 +57,7 @@ If you are using a shared redis, you can pass a namespace, which will be used fo
 prefixing redis keys in addition to the default `redlocker:` namespace.
 
 ```ruby
-redlocker = Redlocker.new(redis: Redis.new, namespace: "my-namespace")
+RedlockerClient = Redlocker::Client.new(redis: Redis.new, namespace: "my-namespace")
 ```
 
 That's it.
