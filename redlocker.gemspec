@@ -8,8 +8,8 @@ Gem::Specification.new do |spec|
   spec.authors       = ['Benjamin Vetter']
   spec.email         = ['benjamin.vetter@wlw.de']
 
-  spec.summary       = 'Acquire and keep distributed locks using redis'
-  spec.description   = 'Acquire and keep distributed locks using redis'
+  spec.summary       = 'Acquire and keep distributed locks alive using redis'
+  spec.description   = 'Acquire and keep distributed locks alive using redis'
   spec.homepage      = 'https://github.com/mrkamel/redlocker'
   spec.license       = 'MIT'
   spec.required_ruby_version = Gem::Requirement.new('>= 2.5.0')

@@ -3,12 +3,12 @@
 [![Build](https://github.com/mrkamel/redlocker/workflows/test/badge.svg)](https://github.com/mrkamel/redlocker/actions?query=workflow%3Atest+branch%3Amaster)
 [![Gem Version](https://badge.fury.io/rb/redlocker.svg)](http://badge.fury.io/rb/redlocker)
 
-**Acquire and keep distributed locks using redis**
+**Acquire and keep distributed locks alive using redis**
 
-Redlocker allows to easily acquire and keep distributed locks using redis.
-An acquired lock gets automatically renewed every second, i.e. its 5 second
-expiry value gets renewed in redis every second, and it gets released when
-the given block finishes.
+Redlocker allows to easily acquire and keep distributed locks alive using
+redis. An acquired lock gets automatically renewed every second, i.e. its 5
+second expiry value gets renewed in redis every second, and it gets released
+when the given block finishes.
 
 ## Installation
 
@@ -31,9 +31,9 @@ Or install it yourself as:
 Using Redlocker could not be easier:
 
 ```ruby
-redlocker = Redlocker.new(redis: Redis.new)
+RedlockerClient = Redlocker::Client.new(redis: Redis.new)
 
-redlocker.lock(name: 'some_lock', timeout: 5) do
+RedlockerClient.lock(name: 'some_lock', timeout: 5) do
   # lock acquired
 end
 ```
@@ -48,7 +48,7 @@ time to wait between subsequent calls which check in redis whether or not the
 lock is free. Default is 0.25 seconds:
 
 ```ruby
-redlocker.lock(name: "some lock", timeout: 5, delay: 1) do
+RedlockerClient.lock(name: "some lock", timeout: 5, delay: 1) do
   # lock acquired
 end
 ```
@@ -57,7 +57,7 @@ If you are using a shared redis, you can pass a namespace, which will be used fo
 prefixing redis keys in addition to the default `redlocker:` namespace.
 
 ```ruby
-redlocker = Redlocker.new(redis: Redis.new, namespace: "my-namespace")
+RedlockerClient = Redlocker::Client.new(redis: Redis.new, namespace: "my-namespace")
 ```
 
 That's it.
