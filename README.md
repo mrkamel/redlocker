@@ -10,8 +10,8 @@ purpose of distributed locking, but they require you to specify the time
 time-to-live of your locks. Contrary, Redlocker allows you to easily acquire
 and keep distributed locks alive using redis. An acquired lock gets
 automatically renewed every second from a thread, i.e. its 5 second expiry
-value gets renewed in redis every second, and it gets released when the given
-block finishes.
+value gets renewed in redis every second, and it gets released as soon as the
+given block finishes.
 
 ## Installation
 
