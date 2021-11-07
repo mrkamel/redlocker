@@ -3,8 +3,8 @@
 module Redlocker
   # The `Redlocker::Client` class allows to easily acquire and keep distributed
   # locks using redis. The acquired lock gets automatically renewed every
-  # second, i.e. its 5 second expiry value gets renewed in redis every second,
-  # and it gets released when the given block finishes.
+  # second from a thread, i.e. its 5 second expiry value gets renewed in redis
+  # every second, and it gets released when the given block finishes.
   #
   # @example
   #   RedlockerClient = Redlocker::Client.new(redis: Redis.new)
