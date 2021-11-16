@@ -36,7 +36,7 @@ Using Redlocker could not be easier:
 ```ruby
 RedlockerClient = Redlocker::Client.new(redis: Redis.new)
 
-RedlockerClient.lock(name: 'some_lock', timeout: 5) do
+RedlockerClient.with_lock(name: 'some_lock', timeout: 5) do
   # lock acquired
 end
 ```
@@ -51,7 +51,7 @@ time to wait between subsequent calls which check in redis whether or not the
 lock is free. Default is 0.25 seconds:
 
 ```ruby
-RedlockerClient.lock(name: "some lock", timeout: 5, delay: 1) do
+RedlockerClient.with_lock(name: "some lock", timeout: 5, delay: 1) do
   # lock acquired
 end
 ```
