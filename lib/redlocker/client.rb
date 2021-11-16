@@ -9,7 +9,7 @@ module Redlocker
   # @example
   #   RedlockerClient = Redlocker::Client.new(redis: Redis.new)
   #
-  #   RedlockerClient.with_lock(name: "some_lock", timeout: 5, delay: 1) do
+  #   RedlockerClient.with_lock("some_lock", timeout: 5, delay: 1) do
   #     # lock acquired
   #   end
 
@@ -48,11 +48,11 @@ module Redlocker
     #   acquired.
     #
     # @example
-    #   RedlockerClient.with_lock(name: "some_lock", timeout: 5, delay: 1) do
+    #   RedlockerClient.with_lock("some_lock", timeout: 5, delay: 1) do
     #     # lock acquired
     #   end
 
-    def with_lock(name:, timeout:, delay: 0.25, &block)
+    def with_lock(name, timeout:, delay: 0.25, &block)
       Lock.new(client: self, name: name, timeout: timeout, delay: delay).acquire(&block)
     end
   end
