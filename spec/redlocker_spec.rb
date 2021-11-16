@@ -11,7 +11,7 @@ module Redlocker
         lock_id = nil
         pttl = nil
 
-        described_class.new(redis: redis).with_lock(name: 'some_lock', timeout: 3) do
+        described_class.new(redis: redis).with_lock('some_lock', timeout: 3) do
           lock_id = redis.get('redlocker:some_lock')
           pttl = redis.pttl('redlocker:some_lock')
         end
@@ -23,7 +23,7 @@ module Redlocker
       it 'uses the specified namespace' do
         lock_id = nil
 
-        described_class.new(redis: redis, namespace: 'some_namespace').with_lock(name: 'some_lock', timeout: 3) do
+        described_class.new(redis: redis, namespace: 'some_namespace').with_lock('some_lock', timeout: 3) do
           lock_id = redis.get('some_namespace:redlocker:some_lock')
         end
 
@@ -31,7 +31,7 @@ module Redlocker
       end
 
       it 'releases the lock when the block has finished' do
-        described_class.new(redis: redis).with_lock(name: 'some_lock', timeout: 3) do
+        described_class.new(redis: redis).with_lock('some_lock', timeout: 3) do
           # nothing
         end
 
@@ -42,7 +42,7 @@ module Redlocker
         client = described_class.new(redis: redis)
 
         begin
-          client.with_lock(name: 'some_lock', timeout: 3) do
+          client.with_lock('some_lock', timeout: 3) do
             raise 'error'
           end
         rescue StandardError
@@ -58,7 +58,7 @@ module Redlocker
         lock_id = nil
         pttl = nil
 
-        described_class.new(redis: redis).with_lock(name: 'some_lock', timeout: 3) do
+        described_class.new(redis: redis).with_lock('some_lock', timeout: 3) do
           sleep 2.5
 
           lock_id = redis.get('redlocker:some_lock')
@@ -74,7 +74,7 @@ module Redlocker
         client = described_class.new(redis: redis)
 
         thread = Thread.new do
-          client.with_lock(name: 'some_lock', timeout: 3) do
+          client.with_lock('some_lock', timeout: 3) do
             sleep 3 # Block the lock for 3 seconds
           end
         end
@@ -82,7 +82,7 @@ module Redlocker
         sleep 0.1
 
         expect do
-          client.with_lock(name: 'some_lock', timeout: 2) do
+          client.with_lock('some_lock', timeout: 2) do
             # nothing
           end
         end.to raise_error(Redlocker::TimeoutError, 'Did not get lock within 2 seconds')
@@ -94,7 +94,7 @@ module Redlocker
         lock_id = nil
         pttl = nil
 
-        described_class.new(redis: redis).with_lock(name: 'some_lock', timeout: 3) do
+        described_class.new(redis: redis).with_lock('some_lock', timeout: 3) do
           # Let it fail 3 times
           allow(redis).to receive(:expire).and_raise('error')
           sleep 3.5
@@ -116,7 +116,7 @@ module Redlocker
         client = described_class.new(redis: redis)
 
         thread = Thread.new do
-          client.with_lock(name: 'some_lock', timeout: 3) do
+          client.with_lock('some_lock', timeout: 3) do
             sleep 2
           end
         end
@@ -127,7 +127,7 @@ module Redlocker
 
         # It will try to acquire a lock immediately, after 800ms, after 1600ms
         # and should finally succeed after 2400ms
-        client.with_lock(name: 'some_lock', timeout: 3, delay: 0.8) do
+        client.with_lock('some_lock', timeout: 3, delay: 0.8) do
           time = Time.now.to_f - time
         end
 
