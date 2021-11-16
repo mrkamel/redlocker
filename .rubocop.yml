@@ -17,3 +17,6 @@ Style/Documentation:
 
 Style/NumericPredicate:
   Enabled: false
+
+Gemspec/RequireMFA:
+  Enabled: false
