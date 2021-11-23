@@ -85,7 +85,7 @@ module Redlocker
           client.with_lock('some_lock', timeout: 2) do
             # nothing
           end
-        end.to raise_error(Redlocker::TimeoutError, 'Did not get lock within 2 seconds')
+        end.to raise_error(Redlocker::TimeoutError, 'Did not get lock some_lock within 2 seconds')
       ensure
         thread.join
       end

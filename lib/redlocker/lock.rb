@@ -38,7 +38,7 @@ module Redlocker
     #   acquired.
 
     def acquire(&block)
-      raise(TimeoutError, "Did not get lock within #{timeout} seconds") unless acquire_lock
+      raise(TimeoutError, "Did not get lock #{name} within #{timeout} seconds") unless acquire_lock
 
       begin
         keep_lock(&block)
